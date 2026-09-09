@@ -3,11 +3,18 @@ const gpsButton = document.getElementById("gpsButton");
 const shopInput = document.getElementById("shop");
 const shopGroup = document.getElementById("shopGroup");
 const shopCandidates = document.getElementById("shopCandidates");
+const categorySelect = document.getElementById("category");
+const categoryGroup = document.getElementById("categoryGroup");
 const expenseForm = document.getElementById("expenseForm");
 const submitButton = document.getElementById("submitButton");
 const message = document.getElementById("message");
 const amountInput = document.getElementById("amount");
 const typeSelect = document.getElementById("type");
+const mapWrapper = document.getElementById("mapWrapper");
+const mapSearchButton = document.getElementById("mapSearchButton");
+
+let map = null;
+let marker = null;
 
 amountInput.addEventListener("input", () => {
     amountInput.value = amountInput.value.replace(/[^0-9]/g, "");
@@ -23,6 +30,12 @@ function updateShopVisibility() {
     if (isCharge) {
         shopInput.value = "";
         shopCandidates.style.display = "none";
+        mapWrapper.style.display = "none";
+    }
+    categoryGroup.style.display = isCharge ? "none" : "block";
+    categorySelect.required = !isCharge;
+    if (isCharge) {
+        categorySelect.value = "";
     }
 }
 
@@ -40,6 +53,7 @@ gpsButton.addEventListener("click", () => {
         position => {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
+            showMap(latitude, longitude);
             findShop(latitude, longitude);
         },
         error => {
@@ -55,7 +69,57 @@ gpsButton.addEventListener("click", () => {
     );
 });
 
+function showMap(latitude, longitude) {
+    mapWrapper.style.display = "block";
+
+    if (!map) {
+        map = L.map("shopMap").setView([latitude, longitude], 17);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap contributors"
+        }).addTo(map);
+
+        marker = L.marker([latitude, longitude], { draggable: true }).addTo(map);
+
+        map.on("click", event => {
+            marker.setLatLng(event.latlng);
+        });
+    } else {
+        map.setView([latitude, longitude], 17);
+        marker.setLatLng([latitude, longitude]);
+        // 地図のサイズがdisplay:noneの間に変わっていることがあるため再計算する
+        setTimeout(() => map.invalidateSize(), 100);
+    }
+}
+
+mapSearchButton.addEventListener("click", () => {
+    if (!marker) {
+        return;
+    }
+    const position = marker.getLatLng();
+    mapSearchButton.disabled = true;
+    mapSearchButton.textContent = "検索中…";
+    findShopFromMap(position.lat, position.lng);
+});
+
+async function findShopFromMap(latitude, longitude) {
+    try {
+        await runFindShop(latitude, longitude);
+    } finally {
+        mapSearchButton.disabled = false;
+        mapSearchButton.textContent = "この位置で店舗を検索";
+    }
+}
+
 async function findShop(latitude, longitude) {
+    try {
+        await runFindShop(latitude, longitude);
+    } finally {
+        resetGpsButton();
+    }
+}
+
+async function runFindShop(latitude, longitude) {
     try {
         const response = await fetch(GAS_URL, {
             method: "POST",
@@ -77,8 +141,6 @@ async function findShop(latitude, longitude) {
     } catch (error) {
         console.error(error);
         showMessage("店舗を検索できませんでした。", "error");
-    } finally {
-        resetGpsButton();
     }
 }
 
@@ -131,6 +193,7 @@ expenseForm.addEventListener("submit", async event => {
         expenseForm.reset();
         document.getElementById("type").value = "expense";
         shopCandidates.style.display = "none";
+        mapWrapper.style.display = "none";
         updateShopVisibility();
     } catch (error) {
         console.error(error);
