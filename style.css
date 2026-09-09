@@ -1,0 +1,188 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #f5f1eb;
+    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP", sans-serif;
+}
+
+.container {
+    width: min(100% - 30px, 500px);
+    margin: 0 auto;
+    padding: 30px 0 50px;
+}
+
+h1 {
+    margin: 0 0 25px;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+input,
+select {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fff;
+    color: #333;
+    font-size: 1rem;
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: #9b8064;
+}
+
+.amount-input {
+    display: flex;
+    gap: 8px;
+}
+
+.amount-input select {
+    width: 120px;
+    flex-shrink: 0;
+}
+
+.amount-input input {
+    flex: 1;
+}
+
+/* 金額入力欄の上下矢印を非表示 */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.shop-search {
+    display: flex;
+    gap: 8px;
+}
+
+.shop-search input {
+    flex: 1;
+}
+
+.gps-button {
+    flex-shrink: 0;
+    width: 110px;
+    height: 48px;
+    border: none;
+    border-radius: 8px;
+    background: #8b7355;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.gps-button:hover {
+    background: #725c44;
+}
+
+.gps-button:disabled {
+    background: #aaa;
+    cursor: default;
+}
+
+.shop-candidates {
+    margin-top: 10px;
+    display: none;
+}
+
+.shop-candidate {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 7px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    text-align: left;
+    cursor: pointer;
+}
+
+.shop-candidate:hover {
+    background: #f3eee7;
+}
+
+.shop-name {
+    font-weight: 600;
+}
+
+.shop-distance {
+    margin-top: 3px;
+    color: #777;
+    font-size: 0.85rem;
+}
+
+.submit-button {
+    width: 100%;
+    height: 52px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #6f8061;
+    color: white;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    background: #59694d;
+}
+
+.submit-button:disabled {
+    background: #aaa;
+    cursor: default;
+}
+
+.message {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.9rem;
+    display: none;
+}
+
+.message.success {
+    display: block;
+    background: #e7efe3;
+    color: #52604a;
+}
+
+.message.error {
+    display: block;
+    background: #f3e3df;
+    color: #8a5147;
+}
+
+@media (min-width: 700px) {
+    .container {
+        margin-top: 30px;
+    }
+}
