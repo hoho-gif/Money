@@ -31,9 +31,12 @@ updateShopVisibility();
 
 function updateShopVisibility() {
     const isCharge = typeSelect.value === "charge";
-    shopGroup.style.display = isCharge ? "none" : "block";
-    shopInput.required = !isCharge;
-    if (isCharge) {
+    const isIncome = typeSelect.value === "income";
+    const hideShop = isCharge || isIncome;
+
+    shopGroup.style.display = hideShop ? "none" : "block";
+    shopInput.required = !hideShop;
+    if (hideShop) {
         shopInput.value = "";
         shopAddressInput.value = "";
         shopCandidates.style.display = "none";
