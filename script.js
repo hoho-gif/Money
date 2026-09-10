@@ -1,6 +1,7 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzSMlNS_DBTP7FzoU_yFuLE7AC0R--o7e20wnxxwB_sAEjvKjeK6DWIKExjq5Dmhglf-g/exec";
 const gpsButton = document.getElementById("gpsButton");
 const shopInput = document.getElementById("shop");
+const shopAddressInput = document.getElementById("shopAddress");
 const shopGroup = document.getElementById("shopGroup");
 const shopCandidates = document.getElementById("shopCandidates");
 const categorySelect = document.getElementById("category");
@@ -20,6 +21,11 @@ amountInput.addEventListener("input", () => {
     amountInput.value = amountInput.value.replace(/[^0-9]/g, "");
 });
 
+// 店舗名を手入力で書き換えたら、選択済みだった住所は無効にする
+shopInput.addEventListener("input", () => {
+    shopAddressInput.value = "";
+});
+
 typeSelect.addEventListener("change", updateShopVisibility);
 updateShopVisibility();
 
@@ -29,6 +35,7 @@ function updateShopVisibility() {
     shopInput.required = !isCharge;
     if (isCharge) {
         shopInput.value = "";
+        shopAddressInput.value = "";
         shopCandidates.style.display = "none";
         mapWrapper.style.display = "none";
     }
@@ -154,6 +161,7 @@ function displayShopCandidates(shops) {
         `;
         button.addEventListener("click", () => {
             shopInput.value = shop.name;
+            shopAddressInput.value = shop.address || "";
             shopCandidates.style.display = "none";
         });
         shopCandidates.appendChild(button);
@@ -171,6 +179,7 @@ expenseForm.addEventListener("submit", async event => {
         amount: document.getElementById("amount").value,
         payment: document.getElementById("payment").value,
         shop: document.getElementById("shop").value,
+        address: shopAddressInput.value,
         category: document.getElementById("category").value,
         memo: document.getElementById("memo").value
     };
