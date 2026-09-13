@@ -214,6 +214,32 @@ input[type="number"] {
     color: #8a5147;
 }
 
+.summary-wrapper {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    display: none;
+    text-align: center;
+}
+
+.summary-wrapper h2 {
+    margin: 0 0 8px;
+    font-size: 1.1rem;
+}
+
+.summary-total {
+    margin: 0 0 15px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #6f8061;
+}
+
+#summaryChart {
+    max-width: 100%;
+}
+
 @media (min-width: 700px) {
     .container {
         margin-top: 30px;

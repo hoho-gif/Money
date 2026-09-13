@@ -13,9 +13,13 @@ const amountInput = document.getElementById("amount");
 const typeSelect = document.getElementById("type");
 const mapWrapper = document.getElementById("mapWrapper");
 const mapSearchButton = document.getElementById("mapSearchButton");
+const summaryWrapper = document.getElementById("summaryWrapper");
+const summaryTotal = document.getElementById("summaryTotal");
+const summaryChartCanvas = document.getElementById("summaryChart");
 
 let map = null;
 let marker = null;
+let summaryChart = null;
 
 amountInput.addEventListener("input", () => {
     amountInput.value = amountInput.value.replace(/[^0-9]/g, "");
@@ -201,6 +205,9 @@ expenseForm.addEventListener("submit", async event => {
         shopCandidates.style.display = "none";
         mapWrapper.style.display = "none";
         updateShopVisibility();
+        if (result.summary) {
+            displaySummary(result.summary);
+        }
     } catch (error) {
         console.error(error);
         showMessage("登録できませんでした。", "error");
@@ -209,6 +216,43 @@ expenseForm.addEventListener("submit", async event => {
         submitButton.textContent = "登録";
     }
 });
+
+function displaySummary(summary) {
+    summaryWrapper.style.display = "block";
+    summaryTotal.textContent = "¥" + summary.total.toLocaleString();
+
+    const labels = summary.categories.map(category => category.name);
+    const amounts = summary.categories.map(category => category.amount);
+
+    if (summaryChart) {
+        summaryChart.data.labels = labels;
+        summaryChart.data.datasets[0].data = amounts;
+        summaryChart.update();
+        return;
+    }
+
+    summaryChart = new Chart(summaryChartCanvas, {
+        type: "pie",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: amounts,
+                backgroundColor: [
+                    "#6f8061", "#9b8064", "#8b7355", "#c9a86a", "#a3b18a",
+                    "#e07a5f", "#81b29a", "#f2cc8f", "#3d405b", "#e5989b",
+                    "#457b9d", "#bc6c25", "#606c38"
+                ]
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            }
+        }
+    });
+}
 
 function resetGpsButton() {
     gpsButton.disabled = false;
